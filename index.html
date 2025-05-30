@@ -6,13 +6,15 @@
   <title>Love 3D</title>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet"/>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       overflow: hidden;
-      height: 100vh;
       font-family: "Parisienne", cursive;
       background: radial-gradient(circle at center, #200236, #000);
       perspective: 1000px;
+      overscroll-behavior: none;
     }
 
     #scene {
@@ -95,6 +97,8 @@
     const scene = document.getElementById("scene");
     const activeElements = [];
 
+    const getHeight = () => document.documentElement.clientHeight;
+
     function createElement(type) {
       const el = document.createElement("div");
       const x = Math.random() * window.innerWidth;
@@ -123,12 +127,13 @@
     }
 
     function animateAll() {
+      const height = getHeight();
       for (let i = activeElements.length - 1; i >= 0; i--) {
         const obj = activeElements[i];
         obj.y += obj.speed;
         obj.el.style.top = `${obj.y}px`;
 
-        if (obj.y > window.innerHeight + 50) {
+        if (obj.y > height + 50) {
           obj.el.remove();
           activeElements.splice(i, 1);
         }
@@ -136,12 +141,12 @@
       requestAnimationFrame(animateAll);
     }
 
-    // Khởi tạo ban đầu nhiều phần tử
+    // Tạo ban đầu
     for (let i = 0; i < 30; i++) createElement("text");
     for (let i = 0; i < 12; i++) createElement("heart");
     for (let i = 0; i < 6; i++) createElement("rose");
 
-    // Tạo mới liên tục
+    // Liên tục thêm
     setInterval(() => createElement("text"), 250);
     setInterval(() => createElement("heart"), 700);
     setInterval(() => createElement("rose"), 1000);
