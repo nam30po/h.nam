@@ -3,21 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Falling 3D Text</title>
+  <title>Love 3D</title>
   <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --bg-gradient: radial-gradient(circle at center, #200236, #000000 80%);
-      --font: "Parisienne", cursive;
-    }
-
     body {
       margin: 0;
-      padding: 0;
       overflow: hidden;
       height: 100vh;
-      font-family: var(--font);
-      background: var(--bg-gradient);
+      font-family: "Parisienne", cursive;
+      background: radial-gradient(circle at center, #200236, #000);
       perspective: 1000px;
     }
 
@@ -26,7 +20,6 @@
       width: 100%;
       height: 100%;
       transform-style: preserve-3d;
-      transition: transform 0.15s ease-out;
     }
 
     .falling-text {
@@ -34,59 +27,47 @@
       font-size: 20px;
       white-space: nowrap;
       pointer-events: none;
-      opacity: 1;
-      transform-style: preserve-3d;
-      animation: fadeInOut 2s infinite alternate;
-      font-weight: bold;
       user-select: none;
+      animation: fadeInOut 2s infinite alternate;
       color: #fff;
+      font-weight: bold;
     }
 
-    .text-1 { text-shadow: 0 0 5px #25d7fb, 0 0 30px #25d7fb; }
-    .text-2 { text-shadow: 0 0 5px #00ff66, 0 0 30px #00ff66; }
-    .text-3 { text-shadow: 0 0 5px #ff63a2, 0 0 30px #ff63a2; }
+    .text-1 { text-shadow: 0 0 5px #25d7fb; }
+    .text-2 { text-shadow: 0 0 5px #00ff66; }
+    .text-3 { text-shadow: 0 0 5px #ff63a2; }
 
     .heart, .rose {
       position: absolute;
       pointer-events: none;
-      opacity: 1;
-      transform-style: preserve-3d;
-      animation: float 4s infinite ease-in-out;
+      animation: float 3s infinite ease-in-out;
     }
 
     .heart {
-      width: 50px;
-      height: 50px;
+      width: 30px;
+      height: 30px;
       clip-path: url(#heart);
-      overflow: hidden;
     }
 
     .heart img {
       width: 100%;
-      height: auto;
+      height: 100%;
       object-fit: cover;
-      animation: scale3D 2s infinite ease-in-out;
     }
 
     .rose {
-      color: #e70a0a;
       font-size: 20px;
       transform: rotate(45deg);
-      text-shadow: 0 0 10px #7092a7;
+      text-shadow: 0 0 5px #7092a7;
     }
 
     @keyframes fadeInOut {
       from { opacity: 1; }
-      to { opacity: 0.2; }
-    }
-
-    @keyframes scale3D {
-      from { transform: scale(1); }
-      to { transform: scale(1.2); }
+      to { opacity: 0.3; }
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0); opacity: 0; }
+      0%,100% { transform: translateY(0); opacity: 0.2; }
       50% { transform: translateY(-10px); opacity: 1; }
     }
   </style>
@@ -103,96 +84,69 @@
 
   <script>
     const texts = [
-      "I Love You", "♥️ Diễm Quỳnh ♥️", "Chúc Em 1/6 thật vui vẻ!",
-      "Em là niềm hạnh phúc của anh", "Cảm ơn vì đã đến bên anh",
-      "1/6 dành tặng người anh thương", "Tình yêu này là mãi mãi",
-      "Yêu Em Không Cần Lý Do", "Aishiteru", "Saranghaeyo",
-      "Wǒ ài nǐ", "Ya tebya lyublyu", "Je t'aime"
+      "I Love You", "♥️ Diễm Quỳnh ♥️", "Chúc Em 1/6 vui vẻ!",
+      "Tình yêu mãi mãi", "Yêu em không cần lý do", "Je t'aime"
     ];
-
     const images = [
       "https://i.pinimg.com/736x/77/86/1a/77861aa910507e41754f68b5d60699b6.jpg",
-      "https://i.pinimg.com/736x/c3/84/9e/c3849e2eba19a1e8155b7464f9b89da8.jpg",
-      "https://i.pinimg.com/736x/5f/3c/71/5f3c71b061d9d56cb00e5fc1dd9f5969.jpg",
-      "https://i.pinimg.com/736x/94/59/66/9459664d0858ec81ba249d98fdb4ee3c.jpg",
-      "https://i.pinimg.com/736x/d9/09/c0/d909c0b86ea1a4e65495785db03ef636.jpg"
+      "https://i.pinimg.com/736x/c3/84/9e/c3849e2eba19a1e8155b7464f9b89da8.jpg"
     ];
 
     const scene = document.getElementById("scene");
-    let rotateX = 0, rotateY = 0, targetRotateX = 0, targetRotateY = 0;
-    const maxRotate = 30;
-
-    document.addEventListener("mousemove", (e) => {
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      targetRotateY = ((e.clientX - centerX) / centerX) * maxRotate;
-      targetRotateX = ((e.clientY - centerY) / centerY) * maxRotate;
-    });
-
-    document.addEventListener("touchstart", (e) => {
-      const t = e.touches[0];
-      targetRotateY = ((t.clientX - window.innerWidth / 2) / (window.innerWidth / 2)) * maxRotate;
-      targetRotateX = ((t.clientY - window.innerHeight / 2) / (window.innerHeight / 2)) * maxRotate;
-    }, { passive: true });
-
-    function updateRotation() {
-      rotateX += (targetRotateX - rotateX) * 0.1;
-      rotateY += (targetRotateY - rotateY) * 0.1;
-      scene.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      requestAnimationFrame(updateRotation);
-    }
-    updateRotation();
+    const activeElements = [];
 
     function createElement(type) {
       const el = document.createElement("div");
-      const zLayer = Math.random() * 400 - 200;
-      const left = Math.random() * window.innerWidth;
-      let top = -50;
+      const x = Math.random() * window.innerWidth;
+      const z = Math.random() * 200 - 100;
+      let y = -30;
 
       if (type === "text") {
-        const cls = `falling-text text-${Math.floor(Math.random() * 3) + 1}`;
-        el.className = cls;
+        el.className = `falling-text text-${Math.floor(Math.random() * 3) + 1}`;
         el.innerText = texts[Math.floor(Math.random() * texts.length)];
-        el.style.fontSize = `${Math.random() * 20 + 18}px`;
-        if (Math.random() < 0.5) top = Math.random() * window.innerHeight;
+        el.style.fontSize = `${Math.random() * 10 + 20}px`;
       } else if (type === "heart") {
         el.className = "heart";
         el.innerHTML = `<img src="${images[Math.floor(Math.random() * images.length)]}" alt="♡"/>`;
-        if (Math.random() < 0.5) top = Math.random() * window.innerHeight;
       } else if (type === "rose") {
         el.className = "rose";
         el.innerText = "🌺";
         el.style.transform += ` rotate(${Math.random() * 360}deg)`;
-        if (Math.random() < 0.5) top = Math.random() * window.innerHeight;
       }
 
-      el.style.left = `${left}px`;
-      el.style.top = `${top}px`;
-      el.style.transform = `translateZ(${zLayer}px)`;
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.style.transform = `translateZ(${z}px)`;
       scene.appendChild(el);
 
-      const speed = Math.random() * 1.5 + 0.5;
-      let posY = top;
-
-      function animate() {
-        posY += speed;
-        el.style.top = `${posY}px`;
-        if (posY > window.innerHeight + 50) {
-          el.remove();
-        } else {
-          requestAnimationFrame(animate);
-        }
-      }
-      animate();
+      activeElements.push({ el, y, speed: Math.random() * 1 + 0.5 });
     }
 
-    for (let i = 0; i < 30; i++) createElement("text");
-    for (let i = 0; i < 10; i++) createElement("heart");
-    for (let i = 0; i < 5; i++) createElement("rose");
+    function animateAll() {
+      for (let i = activeElements.length - 1; i >= 0; i--) {
+        const obj = activeElements[i];
+        obj.y += obj.speed;
+        obj.el.style.top = `${obj.y}px`;
 
-    setInterval(() => createElement("text"), 300);
-    setInterval(() => createElement("heart"), 1000);
+        if (obj.y > window.innerHeight + 50) {
+          obj.el.remove();
+          activeElements.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animateAll);
+    }
+
+    // Khởi tạo ban đầu nhiều phần tử
+    for (let i = 0; i < 30; i++) createElement("text");
+    for (let i = 0; i < 12; i++) createElement("heart");
+    for (let i = 0; i < 6; i++) createElement("rose");
+
+    // Tạo mới liên tục
+    setInterval(() => createElement("text"), 250);
+    setInterval(() => createElement("heart"), 700);
     setInterval(() => createElement("rose"), 1000);
+
+    animateAll();
   </script>
 </body>
 </html>
