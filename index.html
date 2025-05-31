@@ -26,23 +26,25 @@
 
     .falling-text {
       position: absolute;
-      font-size: 20px;
+      font-size: 18px;
       white-space: nowrap;
       pointer-events: none;
       user-select: none;
       animation: fadeInOut 2s infinite alternate;
       color: #fff;
       font-weight: bold;
+      will-change: transform, top;
     }
 
-    .text-1 { text-shadow: 0 0 5px #25d7fb; }
-    .text-2 { text-shadow: 0 0 5px #00ff66; }
-    .text-3 { text-shadow: 0 0 5px #ff63a2; }
+    .text-1 { text-shadow: 0 0 2px #25d7fb; }
+    .text-2 { text-shadow: 0 0 2px #00ff66; }
+    .text-3 { text-shadow: 0 0 2px #ff63a2; }
 
     .heart, .rose {
       position: absolute;
       pointer-events: none;
       animation: float 3s infinite ease-in-out;
+      will-change: transform, top;
     }
 
     .heart {
@@ -60,7 +62,7 @@
     .rose {
       font-size: 20px;
       transform: rotate(45deg);
-      text-shadow: 0 0 5px #7092a7;
+      text-shadow: 0 0 3px #7092a7;
     }
 
     @keyframes fadeInOut {
@@ -71,6 +73,13 @@
     @keyframes float {
       0%,100% { transform: translateY(0); opacity: 0.2; }
       50% { transform: translateY(-10px); opacity: 1; }
+    }
+
+    /* Tắt animation nếu trên mobile để nhẹ hơn */
+    @media (max-width: 768px) {
+      .heart, .rose {
+        animation: none !important;
+      }
     }
   </style>
 </head>
@@ -96,10 +105,13 @@
 
     const scene = document.getElementById("scene");
     const activeElements = [];
+    const MAX_ELEMENTS = 60;
 
     const getHeight = () => document.documentElement.clientHeight;
 
     function createElement(type) {
+      if (activeElements.length >= MAX_ELEMENTS) return;
+
       const el = document.createElement("div");
       const x = Math.random() * window.innerWidth;
       const z = Math.random() * 200 - 100;
@@ -108,7 +120,7 @@
       if (type === "text") {
         el.className = `falling-text text-${Math.floor(Math.random() * 3) + 1}`;
         el.innerText = texts[Math.floor(Math.random() * texts.length)];
-        el.style.fontSize = `${Math.random() * 10 + 20}px`;
+        el.style.fontSize = `${Math.random() * 8 + 16}px`;
       } else if (type === "heart") {
         el.className = "heart";
         el.innerHTML = `<img src="${images[Math.floor(Math.random() * images.length)]}" alt="♡"/>`;
@@ -119,8 +131,7 @@
       }
 
       el.style.left = `${x}px`;
-      el.style.top = `${y}px`;
-      el.style.transform = `translateZ(${z}px)`;
+      el.style.transform = `translateY(${y}px) translateZ(${z}px)`;
       scene.appendChild(el);
 
       activeElements.push({ el, y, speed: Math.random() * 1 + 0.5 });
@@ -131,7 +142,9 @@
       for (let i = activeElements.length - 1; i >= 0; i--) {
         const obj = activeElements[i];
         obj.y += obj.speed;
-        obj.el.style.top = `${obj.y}px`;
+
+        // Thay vì top, dùng transform translateY
+        obj.el.style.transform = `translateY(${obj.y}px) ${obj.el.style.transform.replace(/translateY\([^)]+\)/, '')}`;
 
         if (obj.y > height + 50) {
           obj.el.remove();
@@ -142,14 +155,14 @@
     }
 
     // Tạo ban đầu
-    for (let i = 0; i < 30; i++) createElement("text");
-    for (let i = 0; i < 12; i++) createElement("heart");
-    for (let i = 0; i < 6; i++) createElement("rose");
+    for (let i = 0; i < 25; i++) createElement("text");
+    for (let i = 0; i < 10; i++) createElement("heart");
+    for (let i = 0; i < 4; i++) createElement("rose");
 
-    // Liên tục thêm
-    setInterval(() => createElement("text"), 250);
-    setInterval(() => createElement("heart"), 700);
-    setInterval(() => createElement("rose"), 1000);
+    // Liên tục thêm (giảm tần suất)
+    setInterval(() => createElement("text"), 400);
+    setInterval(() => createElement("heart"), 1000);
+    setInterval(() => createElement("rose"), 1500);
 
     animateAll();
   </script>
