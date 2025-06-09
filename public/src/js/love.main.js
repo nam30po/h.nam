@@ -1,6 +1,6 @@
 // CHỈNH NGÀY BẮT ĐẦU HẸN HÒ
 $(function() {
-    var ngayhenho="3-3-202";
+    var ngayhenho="3-3-2025";
     setInterval(() => {
         let e=ngayhenho.split("-"),
             n=new Date(`${e[2]}-${e[1]}-${e[0]}`),
